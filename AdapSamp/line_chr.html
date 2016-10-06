@@ -14,6 +14,16 @@ body {
   stroke-width: 2px;
 }
 
+input[type=button]
+{
+    background-color: #107EB5;
+    color: #107EB5;
+    height: 24px;
+    width: 103px;
+    color: #D5E4E7;
+    \\box-shadow:-1px 2px #107EB5 inset;
+}
+
 .axis text {
     font-family: helvetica;
     font-size: 12px;
@@ -28,6 +38,11 @@ body {
 </style>
 <body>
 
+
+<div>
+    <h1>Adaptive Sampling of a Schwefel Function</h1>
+</div>
+
 <div id="option">
     <input id="hideButton"
            type="button"
@@ -36,11 +51,18 @@ body {
            type="button"
            value="Expand Node" />
 </div>
+<div>
+    <input id="nodeAreas"
+           type="checkbox" />
+    <label for="nodeAreas"> Show Node Areas</label>
+</div>
 
 
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script>
 
+var showAreas = false;
+var first = true;
 
 // Set up the svg area for the figure and the node depth chart
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
@@ -64,7 +86,7 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
     var nodeBarHeight = 60;
 
     // Defines how far through the data set the animation is
-    var node_pos = 0;
+    var node_pos =0;
 
     // Set up the axes
     var x = d3.scale.linear()
@@ -173,6 +195,17 @@ var svg = d3.select("body").append("svg")
 var g1 = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + (heightTop + margin.top) + ") scale(1, " + (height- heightTop)/height + ")");
 
+d3.select("#nodeAreas")
+            .on("click", function () {
+                if (showAreas == false) {
+                    showAreas = true;
+                } else if (showAreas == true) {
+                    showAreas = false;
+                    g1.selectAll("rect.area")
+                                .data(nodeData)
+                                .remove()
+                }
+            });
 
 /* Create a shared transition for anything we're animating */
     var t = g1.transition()
@@ -270,10 +303,11 @@ d3.csv("schewefel.csv", function(error, data) {
                         depth = nodeData[nodeData.length-1].depth - 1;
                     } else {
                         depth = 1;
+                        first = true;
                     }
-                    var rect_id = "rect[id='" + rect_names[depth -1] + "']";
 
                     /* Move to show which node will expand next */
+                    var rect_id = "rect[id='" + rect_names[depth -1] + "']";
                     g2.select("rect[id='expand']")
                         .transition()
                         .delay(1000)
@@ -281,6 +315,8 @@ d3.csv("schewefel.csv", function(error, data) {
                         .attr("x", function() {
                             return (nextExpand - 1) * (width / colourData.length);
                         });
+
+
 
                     // Highlight the rect of the expanding node depth
                     g2.select(rect_id)
@@ -298,13 +334,68 @@ d3.csv("schewefel.csv", function(error, data) {
                                 })
                         });
 
+                    console.log(depth);
+                    if (showAreas == true) {
+                        /* Add rectangles to show where the nodes are */
+                        g1.selectAll("rect.area")
+                            .data(nodeData)
+                            .enter()
+                            .append("rect")
+                            .attr("class", "area")
+                            .transition()
+                            .duration(1000)
+                            .attr('x', function(d) {
+                                return x(parseFloat(nodeData[nodeData.length-2].x_val - (3*d.delta)));
+                            })
+                            .attr('y', function(d) {
+                                return (d.depth * padding)/2;
+                            })
+                            .attr('height', function(d) {
+                                return height - (d.depth * padding);
+                            })
+                            .attr('width', function(d) {
+                                return 2*(x(parseFloat(nodeData[nodeData.length-2].x_val + (3*d.delta))) - x(parseFloat(nodeData[nodeData.length-2].x_val - (3*d.delta))));
+                            })
+                            .style('fill', 'none')
+                            .attr('stroke-width', 2)
+                            .attr('opacity', 0.8)
+                            .attr("stroke", function(d) {
+                                return d3.rgb(c10(depth)).brighter(1);
+                            })
+                            .each("end", function() {
+                                d3.select(this)
+                                    .transition()
+                                    .attr('x', function(d) {
+                                        return x(parseFloat(d.x_val - d.delta));
+                                    })
+                                    .attr('y', function(d) {
+                                        return (d.depth * padding)/2;
+                                    })
+                                    .attr('height', function(d) {
+                                        return height - d.depth * padding;
+                                    })
+                                    .attr('opacity', 0.8)
+                                    .attr('width', function(d) {
+                                        console.log(2*(x(parseFloat(d.x_val + d.delta)) - x(parseFloat(d.x_val - d.delta))) - (d.depth * 1.5));
+                                        return 2*(x(parseFloat(d.x_val + d.delta)) - x(parseFloat(d.x_val - d.delta)));
+                                    })
+                                    .style('fill', 'none')
+                                    .attr('stroke-width', 2)
+                                    .attr('opacity', 0.3)
+                                    .attr("stroke", function(d) {
+                                        return c10(d.depth);
+                                    });
+                            });
+                        };
+
+
                     // Add the circles for the next nodes as a tranisition
                     g1.selectAll("circle")
                         .data(nodeData)
                         .enter()
                         .append("circle")
                         .transition()
-                        .duration(500)
+                        .duration(1000)
                         .each("start", function() {
                             d3.select(this)
                                 .attr("cx", function(d) {
