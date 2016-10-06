@@ -170,6 +170,14 @@
 							return h - yScale(d.value) + 14;
 					   });
 
+					svg.selectAll("text")
+						.data(dataset, key)
+						.exit()
+						.transition()
+						.duration(500)
+						.attr("x", -5)
+						.remove();
+
 				});
 
 			

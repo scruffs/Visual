@@ -148,6 +148,14 @@
 							return h - yScale(d) + 14;
 					   });
 
+					svg.selectAll("text")
+						.data(dataset)
+						.exit()
+						.transition()
+						.duration(500)
+						.attr("x", w)
+						.remove();
+
 				});
 
 			

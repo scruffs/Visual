@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Setting the content of paragraphs from data</title>
+		<script type="text/javascript" src="../d3/d3.v3.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+			var field1=[];
+            var field2=[];
+            var dataset;
+
+            <!--d3.csv("food.csv",function(csv){-->
+                <!--csv.map(function(d){-->
+                    <!--field1.push(d.Food);-->
+                    <!--field2.push(+d.Deliciousness);-->
+                <!--})-->
+                <!--console.log("field1",field1);-->
+                <!--console.log("field2",field2);-->
+
+                <!--d3.select("body").selectAll("p")-->
+					<!--.data(field1)-->
+					<!--.enter()-->
+					<!--.append("p")-->
+					<!--.text(function(d) { return d; });-->
+            <!--});-->
+
+            d3.csv("../AdapSamp/schewefel.csv", function(data) {
+            	dataset = data;
+				console.log(dataset);
+
+				d3.select("body").selectAll("p")
+					.data(dataset)
+					.enter()
+					.append("p")
+					.text(function(d) { return d.Schewfel_x; });
+			});
+
+
+
+		</script>
+	</body>
+</html>

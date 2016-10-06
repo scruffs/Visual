@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+</style>
+<body>
+
+<div id="option">
+    <input id="hideButton"
+           type="button"
+           value="Hide Function"/>
+    <input id="expand"
+           type="button"
+           value="Expand Node" />
+</div>
+
+
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script>
+
+
+
+
+
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var formatDate = d3.time.format("%d-%b-%y");
+
+var padding = 20;
+
+var hidden = false;
+
+var curtain;
+
+var expandingNode = 1;
+
+var current_nodes;
+
+var node_pos = 0;
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var line = d3.svg.line()
+    .x(function(d) { return x(parseFloat(d.Schewfel_x)); })
+    .y(function(d) { return y(parseFloat(d.Schewfel_y)); });
+
+var dataset;
+
+var nodeData;
+
+    var c10 = d3.scale.category10()
+    .domain([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+    //Width and height
+    var w1 = 300;
+    var h1 = 60;
+    var barPadding = 2;
+
+    var dataset1 = [ 1, 2, 3, 4, 5, 6];
+    var rect_names = ["one", "two", "three", "four", "five", "six"];
+
+    //Create SVG element
+    var svg1 = d3.select("body")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", h1);
+
+    // Create rects for node depth colour
+    svg1.selectAll("rect")
+        .data(dataset1)
+        .enter()
+        .append("rect")
+        .attr("id", function(d, i) {
+            return rect_names[i];
+        })
+        .attr("x", function(d, i) {
+            return width/2 - w1/2 + i * (w1 / dataset1.length);
+        })
+        .attr("y", 10)
+        .attr("width", function(d) {
+            return (w1 / dataset1.length - barPadding);
+        })
+        .attr("height", h1)
+        .attr("fill", function(d) {
+            return c10(d);
+        })
+        .attr("transform", "translate(0, 10)");
+
+    // Add a lable for the rects
+    svg1.selectAll("text")
+        .data(dataset1)
+        .enter()
+        .append("text")
+        .text(function(d) {
+            return d;
+        })
+        .attr("text-anchor", "middle")
+        .attr("x", function(d, i) {
+            return width/2 - w1/2 + (i + 0.5) * (w1 / dataset1.length);
+        })
+        .attr("y", function() {
+            return h1/2 + 18;
+        })
+        .attr("font-family", "helvetica")
+        .attr("font-size", "26px")
+        .attr("fill", "black");
+
+    // This rect is a marker to show which one last expanded
+    svg1.append("rect")
+        .attr("id", "expand")
+        .attr("x", function() {
+            return width/2 - w1/2;
+        })
+        .attr("y", h1-5)
+        .attr("width", function(d) {
+            return (w1 / dataset1.length - barPadding);
+        })
+        .attr("height", 5)
+        .attr("fill", "black");
+
+    // Add a lable for the node text colour
+    svg1.append("text")
+        .text("Node Depth")
+        .attr("text-anchor", "middle")
+        .attr("x", function() {
+            return width/2;
+        })
+        .attr("y", function() {
+            return 15;
+        })
+        .attr("font-family", "helvetica")
+        .attr("font-size", "20px")
+        .attr("fill", "black");
+
+var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+/* Create a shared transition for anything we're animating */
+    var t = svg.transition()
+    .delay(750)
+    .duration(1000)
+    .ease('linear')
+
+d3.csv("schewefel.csv", function(error, data) {
+        if (error) throw error;
+
+        dataset = data;
+
+        x.domain([  d3.min(dataset, function(d) { return +d.Schewfel_x; }),
+                    d3.max(dataset, function(d) { return +d.Schewfel_x; })
+               ]);
+        y.domain([  d3.min(dataset, function(d) { return +d.Schewfel_y; }) - padding,
+                    d3.max(dataset, function(d) { return +d.Schewfel_y; }) + padding
+               ]);
+
+
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+
+        svg.append("path")
+            .datum(data)
+            .attr("class", "line")
+            .attr("d", line);
+
+        /* Add 'curtain' rectangle to hide entire graph */
+        curtain = svg.append('rect')
+            .attr('x', -1 * width - 2)
+            .attr('y', -1 * height +2)
+            .attr('height', height)
+            .attr('width', width)
+            .attr('class', 'curtain')
+            .attr('transform', 'rotate(180)')
+            .style('fill', '#ffffff')
+
+        t.select('rect.curtain')
+            .attr('width', 0)
+
+        d3.select("#hideButton")
+            .on("click", function () {
+                // check if plot is hidden already and act accordingly
+                if (hidden == false) {
+
+                    // Transition the curtain over the function
+                    svg.selectAll('rect.curtain')
+                        .transition()
+                        .ease('linear')
+                        .duration(2000)
+                        .attr('width', width);
+
+                    d3.select("#hideButton").property("value", "Reveal function");
+                    hidden = true;
+                } else {
+                        svg.selectAll('rect.curtain')
+                            .transition()
+                            .ease('linear')
+                            .duration(2000)
+                            .attr('width', 0)
+
+                    d3.select("#hideButton").property("value", "Hide function");
+                    hidden = false;
+                }
+            });
+
+
+        d3.csv("D1000.csv", function(error, data) {
+            if (error) throw error;
+
+            nodeData = [];
+
+            d3.select("#expand")
+                .on("click", function () {
+
+                    // Push the next nodes data to the array
+                    for (i = 0; i < 3; i++) {
+                        nodeData.push(data[node_pos]);
+                        node_pos++;
+                    };
+
+                    // Find the depth of the next node to expand
+                    var nextExpand = data[node_pos].depth - 1;
+
+
+                    var depth;
+                    if (nodeData.length > 3) {
+                        depth = nodeData[nodeData.length-1].depth - 1;
+                    } else {
+                        depth = 1;
+                    }
+                    var rect_id = "rect[id='" + rect_names[depth -1] + "']";
+
+                    console.log(depth, nextExpand);
+                    console.log(rect_id);
+
+                    svg1.select("rect[id='expand']")
+                        .transition()
+                        .delay(2000)
+                        .duration(500)
+                        .attr("x", function() {
+                            return width/2 - w1/2 + (nextExpand - 1) * (w1 / dataset1.length);
+                        });
+
+
+                    // Highlight the rect of the expanding node depth
+                    svg1.select(rect_id)
+                        .attr("fill", function(d) {
+                            return d3.rgb(c10(depth)).brighter(1);
+                        })
+                        .transition()
+                        .duration(1000)
+                        .each("end", function() {
+                            d3.select(this)
+                            .transition()
+                            .duration(1000)
+                                .attr("fill", function(d) {
+                                    return c10(depth);
+                                })
+                        });
+
+
+                    // Add the circles for the next nodes as a tranisition
+                    svg.selectAll("circle")
+                        .data(nodeData)
+                        .enter()
+                        .append("circle")
+                        .transition()
+                        .delay(0)
+                        .duration(1000)
+                        .each("start", function() {
+                            d3.select(this)
+                                .attr("cx", function(d) {
+                                    return x(parseFloat(nodeData[nodeData.length-2].x_val));
+                                })
+                                .attr("cy", function(d) {
+                                    return y(parseFloat(nodeData[nodeData.length-2].y_val));
+                                })
+                                .attr("r", 6)
+                                .attr("fill", "red");
+                        })
+                        .each("end", function() {
+                            d3.select(this)
+                                .transition()
+                                .duration(1000)
+                                .attr("cx", function(d) {
+                                    return x(parseFloat(d.x_val));
+                                })
+                                .attr("cy", function(d) {
+                                    return y(parseFloat(d.y_val));
+                                })
+                                .attr("r", 3)
+                                .attr("fill", function(d) {
+                                    return c10(d.depth);
+                                });
+                        })
+                });
+        });
+});
+
+</script>

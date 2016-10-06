@@ -26,7 +26,7 @@
 			//Width and height
 			var w = 500;
 			var h = 300;
-			var padding = 30;
+			var padding = 50;
 			
 			/*
 			//Static dataset
@@ -40,11 +40,11 @@
 			//Dynamic, random dataset
 			var dataset = [];					//Initialize empty array
 			var numDataPoints = 50;				//Number of dummy data points to create
-			var xRange = Math.random() * 1000;	//Max range of new x values
-			var yRange = Math.random() * 1000;	//Max range of new y values
+			var xRange = Math.random();	//Max range of new x values
+			var yRange = Math.random();	//Max range of new y values
 			for (var i = 0; i < numDataPoints; i++) {					//Loop numDataPoints times
-				var newNumber1 = Math.floor(Math.random() * xRange);	//New random integer
-				var newNumber2 = Math.floor(Math.random() * yRange);	//New random integer
+				var newNumber1 = Math.random() * xRange;	//New random integer
+				var newNumber2 = Math.random() * yRange;	//New random integer
 				dataset.push([newNumber1, newNumber2]);					//Add new number to array
 			}
 
