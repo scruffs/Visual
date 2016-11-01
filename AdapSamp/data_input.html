@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+  stroke-width: 2px;
+}
+
+input[type=button]
+{
+    background-color: #107EB5;
+    color: #107EB5;
+    height: 24px;
+    width: 103px;
+    color: #D5E4E7;
+    \\box-shadow:-1px 2px #107EB5 inset;
+}
+
+.axis text {
+    font-family: helvetica;
+    font-size: 12px;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+</style>
+<body>
+
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script>
+
+        var showAreas = false;
+        var first = true;
+
+        // Set up the svg area for the figure and the node depth chart
+        var margin = {top: 20, right: 20, bottom: 30, left: 50},
+        width = 960 - margin.left - margin.right,
+        height = 600 - margin.top - margin.bottom;
+
+        //Pads the line domain so it doesn't cross the axes
+        var padding = 10;
+
+        // Set up the axes
+        var x = d3.scale.linear()
+            .range([0, width]);
+        var y = d3.scale.linear()
+            .range([height, 0]);
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+        // This is the function plot area
+        var line = d3.svg.line()
+            .x(function(d) { return x(parseFloat(d.Schewfel_x)); })
+            .y(function(d) { return y(parseFloat(d.Schewfel_y)); });
+
+        // The input function for plotting
+        var functionData;
+
+        // The data set to import nodes to, one at a time
+        var nodeData;
+
+        // make an svg area to draw in
+        var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+
+
+        // append an svg group for the plot area
+        var g = svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        /* Load the function data */
+        d3.csv("schewefel.csv", function(error, data) {
+            if (error) throw error;
+
+            functionData = data;
+
+            x.domain([  d3.min(functionData, function(d) { return +d.Schewfel_x; }) - padding,
+                        d3.max(functionData, function(d) { return +d.Schewfel_x; }) + padding
+                   ]);
+            y.domain([  d3.min(functionData, function(d) { return +d.Schewfel_y; }) - padding,
+                        d3.max(functionData, function(d) { return +d.Schewfel_y; }) + padding
+                   ]);
+
+
+            g.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+
+            g.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+
+            g.append("path")
+                .datum(data)
+                .attr("class", "line")
+                .attr("d", line);
+        });
+
+</script>

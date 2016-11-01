@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+  stroke-width: 2px;
+}
+
+input[type=button]
+{
+    background-color: #107EB5;
+    color: #107EB5;
+    height: 24px;
+    width: 103px;
+    color: #D5E4E7;
+    \\box-shadow:-1px 2px #107EB5 inset;
+}
+
+.axis text {
+    font-family: helvetica;
+    font-size: 12px;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+</style>
+<body>
+
+<div id="option">
+    <input id="expand"
+           type="button"
+           value="Expand Node" />
+</div>
+
+
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script>
+
+var showAreas = false;
+var first = true;
+
+// Set up the svg area for the figure and the node depth chart
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
+
+    //Pads the line domain so it doesn't cross the axes
+    var padding = 10;
+
+    // Defines how far through the data set the animation is
+    var node_pos =0;
+
+    // Set up the axes
+    var x = d3.scale.linear()
+        .range([0, width]);
+    var y = d3.scale.linear()
+        .range([height, 0]);
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left");
+
+    // This is the function plot area
+    var line = d3.svg.line()
+        .x(function(d) { return x(parseFloat(d.Schewfel_x)); })
+        .y(function(d) { return y(parseFloat(d.Schewfel_y)); });
+    
+    // The input function for plotting
+    var functionData;
+
+    // The data set to import nodes to, one at a time
+    var nodeData;
+
+// make an svg area to draw in
+var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+
+    // Set color scales and name space for the node depth chart
+    var c10 = d3.scale.category10()
+    .domain([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    var colourData = [ 1, 2, 3, 4, 5, 6];
+    var rect_names = ["one", "two", "three", "four", "five", "six"];
+
+
+// append an svg group for the plot area
+var g1 = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+/* Create a shared transition for anything we're animating */
+    var t = g1.transition()
+    .delay(750)
+    .duration(1000)
+    .ease('linear')
+
+/* Load the function data */
+d3.csv("schewefel.csv", function(error, data) {
+        if (error) throw error;
+
+        functionData = data;
+
+        x.domain([-1000, 1000]);
+        y.domain([-450, 1250]);
+
+        g1.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        g1.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+
+        g1.append("path")
+            .datum(data)
+            .attr("class", "line")
+            .attr("d", line);
+
+
+        // Load the expansion node data
+        d3.csv("D1000.csv", function(error, data) {
+            if (error) throw error;
+
+            nodeData = [];
+
+            d3.select("#expand")
+                .on("click", function () {
+
+                    // Push the next nodes data to the array
+                    for (i = 0; i < 3; i++) {
+                        nodeData.push(data[node_pos]);
+                        node_pos++;
+                    };
+
+                    // Find the depth of the next node to expand
+                    var nextExpand = data[node_pos].depth - 1;
+
+                    var depth;
+                    if (nodeData.length > 3) {
+                        depth = nodeData[nodeData.length-1].depth - 1;
+                    } else {
+                        depth = 1;
+                        first = true;
+                    }
+
+                    // Add the circles for the next nodes as a tranisition
+                    g1.selectAll("circle")
+                        .data(nodeData)
+                        .enter()
+                        .append("circle")
+                        .transition()
+                        .duration(1000)
+                        .each("start", function() {
+                            d3.select(this)
+                                .attr("cx", function(d) {
+                                    return x(parseFloat(nodeData[nodeData.length-2].x_val));
+                                })
+                                .attr("cy", function(d) {
+                                    return y(parseFloat(nodeData[nodeData.length-2].y_val));
+                                })
+                                .attr("r", 6)
+                                .attr("fill", "red");
+                        })
+                        .each("end", function() {
+                            d3.select(this)
+                                .transition()
+                                .duration(1000)
+                                .attr("cx", function(d) {
+                                    return x(parseFloat(d.x_val));
+                                })
+                                .attr("cy", function(d) {
+                                    return y(parseFloat(d.y_val));
+                                })
+                                .attr("r", 3)
+                                .attr("fill", function(d) {
+                                    return c10(d.depth);
+                                });
+                        })
+                });
+        });
+});
+
+</script>
