@@ -1,0 +1,286 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dave Does Data</title>
+        <link rel="stylesheet" href="css/reset.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+        <link href="lightbox/css/lightbox.css" rel="stylesheet" />
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans|Baumans' rel='stylesheet' type='text/css'>
+        
+        <script src="js/vendor/modernizr.min.js"></script>
+        <script src="js/vendor/respond.min.js"></script>
+        
+        <!-- include extern jQuery file but fall back to local file if extern one fails to load !-->
+        <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript">window.jQuery || document.write('<script type="text/javascript" src="js\/vendor\/1.7.2.jquery.min.js"><\/script>')</script>
+        
+        <script src="lightbox/js/lightbox.js"></script>
+        <script src="js/vendor/prefixfree.min.js"></script>
+        <script src="js/vendor/jquery.slides.min.js"></script>
+        <script src="js/script.js"></script>
+        
+        <!--[if lt IE 9]>
+            <style>
+                header
+                {
+                    margin: 0 auto 20px auto;
+                }
+                #four_columns .img-item figure span.thumb-screen
+                {
+                    display:none;
+                }  
+            </style>
+        <![endif]-->
+        
+        
+        <script>
+        $(function() {
+          $('#slides').slidesjs({	
+            height: 235,
+            navigation: false,
+            pagination: false,
+            effect: {
+              fade: {
+                speed: 400
+              }
+            },
+            callback: {
+                start: function(number)
+                {			
+                    $("#slider_content1,#slider_content2,#slider_content3").fadeOut(500);
+                },
+                complete: function(number)
+                {			
+                    $("#slider_content" + number).delay(500).fadeIn(1000);
+                }		
+            },
+            play: {
+                active: false,
+                auto: true,
+                interval: 6000,
+                pauseOnHover: false,
+                effect: "fade"
+            }
+          });
+        });
+        </script>
+	</head>
+
+	<body>
+        <header>
+            <div class="toggleMobile">
+                <span class="menu1"></span>
+                <span class="menu2"></span>
+                <span class="menu3"></span>
+            </div>
+            <div id="mobileMenu">
+                <ul>
+                    <li><a href="javascript:void(0)">Home</a></li>
+                    <li><a href="javascript:void(0)">Porfolio</a></li>
+                    <li><a href="javascript:void(0)">About</a></li>
+                </ul>
+            </div>           
+            <h1>Dave Does Data</h1>
+            <p>From singel electrons to football</p>
+            
+            <nav>
+            	<h2 class="hidden">Our navigation</h2>
+                <ul>
+                    <li><a href="javascript:void(0)">Home</a></li>
+                    <li><a href="javascript:void(0)">Porfolio</a></li>
+                    <li><a href="javascript:void(0)">About</a></li>
+                    <li><a href="javascript:void(0)">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+        <section class="container">
+        	<h2 class="hidden">Highlighted Projects</h2>
+            <article id="slider_content1">
+                <h3>Quantum Electron Pump</h3>
+                <p>The quantum electron pump is a device capable of transferring a discrete number of electrons by cyclically oscillating a control voltage. The primary goal of their development is to measure the current accurately enough to produce a standard of the Ampere at the quantum limit. <a href="javascript:void(0)" class="responsive_button">More info...</a></p>
+                <a class="button" href="javascript:void(0)">More info</a>
+            </article>
+            <article id="slider_content2">
+                <h3>Adaptive Sampling</h3>
+                <p>Traditional optimisation methods fall short when looking at many dimensional problems that have a high resource cost for each sample acquired. Machine learning techniques can by implemented to overcome problem. <a href="javascript:void(0)" class="responsive_button">Mehr lesen...</a></p>
+                <a class="button" href="javascript:void(0)">More info</a>
+            </article>
+            <article id="slider_content3">
+                <h3>Kicking Failures</h3>
+                <p>Has increasing the distance of the point after touchdown led to the current struggles of NFL kickers? <a href="javascript:void(0)" class="responsive_button">Mehr lesen...</a></p>
+                <a class="button" href="javascript:void(0)">More info</a>
+            </article>
+            <div id="slides">
+                <img src="img/electron_pump.bmp" alt="Quantum electron pump">
+                <img src="img/schwef.png" alt="Schwefel Function">
+                <img src="img/pats_kick.jpg" alt="Patriots Field Goal">
+            </div>
+        </section>
+        <section id="spacer">  
+        	<h2 class="hidden">Search bar</h2>
+            <p>Looking for something specific?</p>
+            <div class="search">
+                <form action="#">
+                    <input type="text" name="sitesearch" value="Enter a word..."/>
+                    <input type="submit" name="start_search" class="button" value="Search"/>
+                </form>
+            </div>            
+        </section>
+        <section id="boxcontent">
+        	<h2 class="hidden">Adipiscing</h2>
+            <article>            	               
+                <img src="img/electron_icon.png" alt="Nano-electronics"/>
+                <h3>Nano-electronics</h3>
+                <p>        	
+                    Nano-electronics and low temperature physics. Looking at single electron measurements and spin transport.
+                </p>
+            </article>
+            <article>            	     
+                <img src="img/AI_icon.png" alt="Machine Learning"/>
+                <h3>Machine Learning</h3>
+                <p>        	
+                    Practical applications of machine learning techniques, from adaptive sampling to classification problems.
+                </p>
+            </article>
+            <article>            	    
+                <img src="img/football_icon.png" alt="Football data"/>
+                <h3>Football Data</h3>
+                <p>        	
+                    Dive into the realm of NFL football data.
+                </p>
+            </article>
+            <br class="clear"/>
+        </section>
+        
+        <section id="four_columns">
+            <h2>
+                Pictures of interest
+            </h2>    
+            <article class="img-item">
+            	<h3 class="hidden">pump_data</h3>
+                <figure>  
+                    <a href="img/pump_data.png" rel="lightbox" title="Electron pump data">
+                        <span class="thumb-screen"></span>
+                        <img src="img/pump_data_sml.png" alt="Electron pump data"/>
+                    </a>
+                    <figcaption>
+                        <strong>
+                            Image by: Dave English
+                        </strong>
+                        Example of how electron pump data is built up to produce "pump maps".
+                    </figcaption>
+                </figure>
+            </article>
+            <article class="img-item">
+            	<h3 class="hidden">Rendered electron pump</h3>
+                <figure>
+                    <a href="img/gate_assembly_full.bmp" rel="lightbox" title="Rendered electron pump">
+                        <span class="thumb-screen"></span>
+                        <img src="img/gate_assembly_full_sml.bmp" alt="Rendered CAD drawing of an electron pump"/>
+                    </a>
+                    <figcaption>
+                        <strong>
+                            Image by: Hume Howe
+                        </strong>
+                        A rendered CAD drawing of an typical electron pump. Electrons not to scale!
+                    </figcaption>
+                </figure>
+            </article>
+            <article class="img-item">
+            	<h3 class="hidden">Dolor Sit</h3>
+                <figure>
+                    <a href="img/Table_mountain.jpg" rel="lightbox" title="Table Mountain">
+                        <span class="thumb-screen"></span>
+                        <img src="img/Table_mountain_sml.jpg" alt="Table Mountain, Cape Town"/>
+                    </a>
+                    <figcaption>
+                        <strong>
+                            Photo by: Dave English
+                        </strong>
+                        The view of table mountain from Big Bay, Cape Town.
+                    </figcaption>
+                </figure>
+            </article>
+            <article class="img-item">
+            	<h3 class="hidden">Knife's edge</h3>
+                <figure>
+                    <a href="img/knifes_edge.jpg" rel="lightbox" title="Knife's edge">
+                        <span class="thumb-screen"></span>
+                        <img src="img/knifes_edge_sml.jpg" alt="Devil's peak via the knife's edge"/>
+                    </a>
+                    <figcaption>
+                        <strong>
+                            Photo by: Alaine Duffy
+                        </strong>
+                        Hiking the knife's edge to reach devil's peak, just above the Unversity of Cape Town.
+                    </figcaption>
+                </figure>
+            </article>
+            <br class="clear"/>
+        </section>
+        
+        <section id="text_columns">
+        	<h2 class="hidden">Blindtext</h2>
+            <article class="column1">    
+                <h3>About the author</h3>
+                <p>Dave English was awarded his PhD in semiconductor Physics in 2012. What began as a desire to use computational techniques to assist with experiments, has blossomed into a full blown passion for machine learning and data-driven visualizations. The content of this site is an expression of that passion, and also a wish to share a little of the experiences gained traveling the world in the pursuit of science.</p>
+                    <p>After spending a couple of years in Boston, he also developed an obsession with America’s Game, the NFL. So this site will contain details of the 2 things Dave knows; electrons and football.</p>
+            </article>
+            <section class="column2">
+            	<h3 class="hidden">Theme icons</h3>
+                <article class="row">  
+                	<h4 class="hidden">Electrons</h4>
+                    <img src="img/electron_icon.png" width="80" class="rocket" alt="Some alt text"/>
+                    <p>The uses of nano-electronics will be discussed from single electron manipulation to spin transport. </p>
+                </article> 
+                <article class="row">
+                	<h4 class="hidden">Football</h4>
+                    <img src="img/football_icon_sml.png" width="80" class="clock" alt="Some alt text"/>
+                    <p>The NFL is at an interesting tipping point. It has an enoumous wealth of data, and far fewer people working on it than in other fields. </p>
+                </article>   
+            </section>
+        </section>
+        <footer>
+        	<h2 class="hidden">Our footer</h2>
+            <section id="copyright">
+            	<h3 class="hidden">Copyright notice</h3>
+                <div class="wrapper">
+                    <div class="social">
+                        <a href="https://uk.linkedin.com/in/dave-english-0211292b"><img src="img/linkedin_icon.png" alt="LinkedIn" width="30"/></a>
+                        <a href="https://www.youtube.com/user/davenenglish"><img src="img/youtube_icon.png" alt="Youtube" width="30"/></a>
+                        <a href="http://www.imgrum.net/user/literal_descent/2354297798"><img src="img/instagram_icon.png" alt="Instagram" width="30"/></a>
+                        <a href="https://www.facebook.com/dave.englsih"><img src="img/facebook-icon.png" alt="Facebook" width="30"/></a>
+                    </div>
+                    &copy; Copyright 2016 by Dave English. All Rights Reserved.
+                </div>
+            </section>
+            <section class="wrapper">
+            	<h3 class="hidden">Footer content</h3>
+                <article class="column">
+                    <h4>Lorem ipsum</h4>
+                    Unterwegs traf es eine Copy. Die Copy warnte das Blindtextchen, da, wo sie herkäme wäre sie zigmal umgeschrieben worden und alles, was von ihrem Ursprung noch übrig wäre, sei das Wort "und" und das Blindtextchen solle umkehren und wieder in sein.
+                </article>
+                <article class="column midlist">
+                    <h4>Consectetuer</h4>
+                    <ul>
+                        <li><a href="javascript:void(0)">Die Copy warnte das Blindtextchen</a></li>
+                        <li><a href="javascript:void(0)">Unterwegs traf es eine Copy</a></li>
+                        <li><a href="javascript:void(0)">Doch alles Gutzureden konnte</a></li>
+                        <li><a href="javascript:void(0)">Als es die ersten Hügel</a></li>
+                    </ul>
+                </article>
+                <article class="column rightlist">
+                    <h4>Dolor sit amet</h4>
+                    <ul>
+                        <li><a href="javascript:void(0)"><img src="img/example-slide-1sml.jpg" width="80" alt="Some alt text"/><span>Unterwegs traf es eine Copy. Die Copy warnte.</span></a></li>
+                        <li><a href="javascript:void(0)"><img src="img/example-slide-2sml.jpg" width="80" alt="Some alt text"/><span>Doch alles Gutzureden konnte es nicht.</span></a></li>
+                        <li><a href="javascript:void(0)"><img src="img/example-slide-3sml.jpg" width="80" alt="Some alt text"/><span>Und es dann in ihre Agentur schleppten.</span></a></li>
+                    </ul>
+                    <br class="clear"/>
+                </article>
+            </section>
+        </footer>
+	</body>
+</html>
